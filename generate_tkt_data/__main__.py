@@ -1,6 +1,8 @@
 import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
+from random import randint
+from datetime import timedelta
 import os
 
 # Carrega o arquivo .env
@@ -21,18 +23,40 @@ def insert_tkt_id(conn):
 
         # Nome da tabela vindo do .env
         table = os.getenv("TKT_TABLE")
-
-        # Monta query parametrizada com segurança
-        insert_query = sql.SQL(
-            "INSERT INTO {table} (tkt_id, totalInteractions, slachangecount, iscritical) VALUES (%s, %s, %s, %s)"
-        ).format(table=sql.Identifier(table))
-
-        # Dados de exemplo
-        dados = (1, 123, 2, "False")
         
-        print(f"Minha query {insert_query}")
-
-        cur.execute(insert_query, dados)
+        tkk_id = 1
+        
+        clients_count = 80
+        
+        
+        
+        for client_id in range(1, clients_count + 1):
+            for ii in range(15, 100):
+                
+                insert_query = sql.SQL(
+                    "INSERT INTO {table} (tkt_id, clientid, totalInteractions, slachangecount, iscritical, timetoresolve) VALUES (%s, %s, %s, %s, %s, %s)"
+                ).format(table=sql.Identifier(table))
+                
+                totalInteractions = randint(3,9)
+                
+                slachangecount = randint(1,3)
+                
+                int_is_critical = randint(1,10)
+                bool_is_critical = int_is_critical == 1
+                
+                horas = randint(0,168)
+                minutos = randint(0,59)
+                
+                teste = f"{horas}:{minutos}"
+        
+                tkt_data = (tkk_id, totalInteractions, client_id, slachangecount, bool_is_critical, teste)
+                
+                tkk_id += 1
+                
+                cur.execute(insert_query, tkt_data)
+        
+        
+            
         conn.commit()
 
         print("Registro inserido com sucesso!")
