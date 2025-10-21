@@ -28,18 +28,16 @@ def insert_tkt_id(conn):
         
         clients_count = 80
         
-        
-        
         for client_id in range(1, clients_count + 1):
-            for ii in range(15, 100):
+            for ii in range(15, 200):
                 
                 insert_query = sql.SQL(
                     "INSERT INTO {table} (tkt_id, clientid, totalInteractions, slachangecount, iscritical, timetoresolve) VALUES (%s, %s, %s, %s, %s, %s)"
                 ).format(table=sql.Identifier(table))
                 
-                totalInteractions = randint(3,9)
+                totalInteractions = randint(3,12)
                 
-                slachangecount = randint(1,3)
+                slachangecount = randint(1,4)
                 
                 int_is_critical = randint(1,10)
                 bool_is_critical = int_is_critical == 1
@@ -49,7 +47,7 @@ def insert_tkt_id(conn):
                 
                 teste = f"{horas}:{minutos}"
         
-                tkt_data = (tkk_id, totalInteractions, client_id, slachangecount, bool_is_critical, teste)
+                tkt_data = (tkk_id, client_id, totalInteractions, slachangecount, bool_is_critical, teste)
                 
                 tkk_id += 1
                 
