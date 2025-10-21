@@ -36,22 +36,24 @@ def tkt_rating(conn):
                 data.clientid,
                 
                 CASE 
-                    WHEN data.totalinteractions <= 3 THEN 20
-                    WHEN data.totalinteractions > 3 and data.totalinteractions <= 5 THEN 15
-                    WHEN data.totalinteractions > 5 and data.totalinteractions <= 7 THEN 7
-                    ELSE 0
+                    WHEN data.totalinteractions <= 3 THEN 25
+                    WHEN data.totalinteractions > 3 and data.totalinteractions <= 5 THEN 20
+                    WHEN data.totalinteractions > 5 and data.totalinteractions <= 7 THEN 15
+                    WHEN data.totalinteractions > 7 and data.totalinteractions <= 12 THEN 7
+                    ELSE 7
                 end as totalinteractions_score,
                 
                 CASE 
-                    WHEN data.slachangecount < 3 THEN 20
+                    WHEN data.slachangecount < 3 THEN 25
+                    WHEN data.slachangecount >= 3 and data.slachangecount < 5 THEN 20
                     WHEN data.slachangecount = 3 THEN 15
                     ELSE 10
                 end as sla_score,
 
                 
-                CASE WHEN data.iscritical THEN 0 ELSE 10 END AS criticality_score,
+                CASE WHEN data.iscritical THEN 0 ELSE 25 END AS criticality_score,
                 
-                GREATEST(0, 20 - (EXTRACT(EPOCH FROM data.timetoresolve) / 3600) / 16.8) AS resolution_time_score
+                GREATEST(0, 25 - (EXTRACT(EPOCH FROM data.timetoresolve) / 3600) / 16.8) AS resolution_time_score
             FROM {tkt_table} AS data
             """
         ).format(
