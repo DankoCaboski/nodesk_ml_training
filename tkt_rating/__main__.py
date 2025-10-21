@@ -13,12 +13,13 @@ config = {
     "password": os.getenv("DB_PASS")
 }
 
+tkt_table = os.getenv("TKT_TABLE")
+ratings_table = os.getenv("RATINGS_TABLE")
+
 def tkt_rating(conn):
     try:
         cur = conn.cursor()
         
-        tkt_table = os.getenv("TKT_TABLE")
-        ratings_table = os.getenv("RATINGS_TABLE")
         
         rating = sql.SQL(
             """
@@ -60,6 +61,9 @@ def tkt_rating(conn):
         
         cur.execute(rating)
         conn.commit()
+        
+        total_rating(conn)
+        
         cur.close()
         
         print("Ticket ratings inseridos com sucesso.")
@@ -69,6 +73,37 @@ def tkt_rating(conn):
         conn.rollback()
         
         
+        
+def total_rating(conn):
+    try:
+        cur = conn.cursor()
+        
+        tkt_table = os.getenv("TKT_TABLE")
+        ratings_table = os.getenv("RATINGS_TABLE")
+        
+        rating = sql.SQL(
+            """
+            UPDATE {ratings_table}
+            SET total_rating = 
+                COALESCE(totalinteractions_score, 0) +
+                COALESCE(sla_score, 0) +
+                COALESCE(criticality_score, 0) +
+                COALESCE(resolution_time_score, 0);
+            """
+        ).format(
+            ratings_table=sql.Identifier(ratings_table),
+            tkt_table=sql.Identifier(tkt_table)
+        )
+        
+        cur.execute(rating)
+        conn.commit()
+        
+        print("Ticket ratings inseridos com sucesso.")
+    
+    except Exception as e:
+        print("Erro ao inserir ticket ratings:", e)
+        conn.rollback()
+      
 if __name__ == "__main__":
     try:
         # Conecta ao banco
