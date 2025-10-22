@@ -100,10 +100,9 @@ def total_rating(conn):
         cur.execute(rating)
         conn.commit()
         
-        print("Ticket ratings inseridos com sucesso.")
     
     except Exception as e:
-        print("Erro ao inserir ticket ratings:", e)
+        print("Erro ao inserir nota final:", e)
         conn.rollback()
       
 if __name__ == "__main__":

@@ -26,10 +26,10 @@ def insert_tkt_id(conn):
         
         tkk_id = 1
         
-        clients_count = 80
+        clients_count = 400
         
         for client_id in range(1, clients_count + 1):
-            for ii in range(15, 200):
+            for ii in range(90, 500):
                 
                 insert_query = sql.SQL(
                     "INSERT INTO {table} (tkt_id, clientid, totalInteractions, slachangecount, iscritical, timetoresolve) VALUES (%s, %s, %s, %s, %s, %s)"
